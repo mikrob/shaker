@@ -33,11 +33,11 @@ func retrieveBotStatus(url string, ch chan bots.BotStatus) {
 	ch <- status
 }
 
-func retrieveEnv(env string, url string, datas *map[string][]bots.BotStatus) {
+func retrieveEnv(env string, url string, ch chan []bots.BotStatus) {
 	consul.NewClient(env)
 	botList := consul.GetBotList(env)
-	mapsData := *datas
-	for _, bot := range botList {
+	result := make([]bots.BotStatus, len(botList))
+	for index, bot := range botList {
 		botStatusURL := fmt.Sprintf("%s/%s/status", url, bot)
 		chStatus := make(chan bots.BotStatus)
 		go retrieveBotStatus(botStatusURL, chStatus)
@@ -47,8 +47,10 @@ func retrieveEnv(env string, url string, datas *map[string][]bots.BotStatus) {
 		status := <-chStatus
 		status.BotName = bot
 		status.BotWantedVersion = wantedVersion
-		mapsData[env] = append(mapsData[env], status)
+		result[index] = status
 	}
+	fmt.Printf(" Result : %s", result)
+	ch <- result
 }
 
 func getBotsDatas(c *gin.Context) {
@@ -59,7 +61,10 @@ func getBotsDatas(c *gin.Context) {
 	//out := make(chan bots.BotStatus)
 	//wg.Add(len(envs))
 	for env, url := range envs {
-		retrieveEnv(env, url, &datas)
+		chStatusList := make(chan []bots.BotStatus)
+		go retrieveEnv(env, url, chStatusList)
+		envValues := <-chStatusList
+		datas[env] = envValues
 	}
 	elapsed := time.Since(start)
 	log.Printf("Retrieve data took %s", elapsed)
