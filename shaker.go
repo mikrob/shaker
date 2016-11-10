@@ -23,7 +23,7 @@ var secrets = gin.H{
 
 func getBotsDatas(c *gin.Context) {
 	var datas map[string][]bots.BotStatus
-
+	//var wg sync.WaitGroup
 	for env, url := range envs {
 		consul.NewClient(env)
 		botList := consul.GetBotList(env)
