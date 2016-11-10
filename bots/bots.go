@@ -37,9 +37,16 @@ func RetrieveBotStatus(url string) BotStatus {
 		log.Fatal("Error while reading response body :", err.Error())
 	}
 	bodyStr := string(bs)
-	bodySplitted := strings.Split(bodyStr, "\n")
-	runningVersion := strings.Replace(bodySplitted[1], "version-0.0.1-", "", -1)
-	//wantedVersion := strings.Replace(bodySplitted[2], "master_hash-", "", -1)
+	var runningVersion string
+	if bodyStr != "" {
+		bodySplitted := strings.Split(bodyStr, "\n")
+		if len(bodySplitted) > 1 {
+			runningVersion = strings.Replace(bodySplitted[1], "version-", "", -1)
+		} else {
+			runningVersion = "Unknown"
+		}
+		//wantedVersion := strings.Replace(bodySplitted[2], "master_hash-", "", -1)
+	}
 	return BotStatus{
 		BotRunningVersion: runningVersion,
 	}
