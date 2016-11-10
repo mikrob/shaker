@@ -53,9 +53,9 @@ func retrieveEnv(env string, url string, ch chan []bots.BotStatus) {
 }
 
 func getBotsDatas(c *gin.Context) {
+	start := time.Now()
 	var datas map[string][]bots.BotStatus
 	datas = make(map[string][]bots.BotStatus)
-	start := time.Now()
 	// create a timeout chan that wait X sec and then send a timeout msg
 	timeoutChan := make(chan bool, 1)
 	go func() {
@@ -80,6 +80,7 @@ func getBotsDatas(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"title":  "BotsUnit Shaker",
 		"status": datas,
+		"time":   elapsed,
 	})
 }
 
