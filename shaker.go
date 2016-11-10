@@ -49,21 +49,30 @@ func retrieveEnv(env string, url string, ch chan []bots.BotStatus) {
 		status.BotWantedVersion = wantedVersion
 		result[index] = status
 	}
-	fmt.Printf(" Result : %s", result)
 	ch <- result
 }
 
 func getBotsDatas(c *gin.Context) {
 	var datas map[string][]bots.BotStatus
 	datas = make(map[string][]bots.BotStatus)
-	//var wg sync.WaitGroup
 	start := time.Now()
-	//out := make(chan bots.BotStatus)
-	//wg.Add(len(envs))
+	// create a timeout chan that wait X sec and then send a timeout msg
+	timeoutChan := make(chan bool, 1)
+	go func() {
+		time.Sleep(30 * time.Second)
+		timeoutChan <- true
+	}()
 	for env, url := range envs {
 		chStatusList := make(chan []bots.BotStatus)
 		go retrieveEnv(env, url, chStatusList)
-		envValues := <-chStatusList
+		var envValues []bots.BotStatus
+		select {
+		case envValuesCase := <-chStatusList:
+			envValues = envValuesCase
+			fmt.Println("received status")
+		case <-timeoutChan:
+			fmt.Println("Timeout for env : ", env)
+		}
 		datas[env] = envValues
 	}
 	elapsed := time.Since(start)
