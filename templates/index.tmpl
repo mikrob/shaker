@@ -1,52 +1,77 @@
 <html>
 
 <head>
-    <title>Shaker</title>
-    <!--Import Google Icon Font-->
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+  <title>Shaker</title>
+  <!--Import Google Icon Font-->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
 
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
-    <div class="container">
-        <h1>
-            {{ .title }}
-        </h1>
-        <p>
-            Took {{ .time }} to retrieve datas
-        </p>
-        {{ range $env, $config := .status }}
-        <h2>{{ $env }}</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th data-field="id">Bot Name</th>
-                    <th data-field="name">Running Version</th>
-                    <th data-field="price">Wanted Version</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{ range $index, $bot := $config }}
-                <tr {{ if eq $bot.BotRunningVersion $bot.BotWantedVersion }}class="card-panel teal lighten-2" {{ else }}class="card-panel red lighten-1" {{ end }}>
-                    <td> {{ $bot.BotName }}</td>
-                    <td>{{ $bot.BotRunningVersion }}</td>
-                    <td>{{ $bot.BotWantedVersion }}</td>
-                </tr>
-                {{ end }}
-            </tbody>
-        </table>
-        {{ end }}
 
+
+
+  <div class="container">
+
+    <h1>
+      {{ .title }}
+    </h1>
+    <p>
+      Took {{ .time }} to retrieve datas
+    </p>
+    {{ range $env, $config := .status }}
+    <h2>{{ $env }}</h2>
+    <a class="waves-effect waves-light btn" href="#modal-{{$env}}">Terraform configuration</a>
+
+    <div id="modal-{{$env}}" class="modal">
+      <div class="modal-content">
+        <h4>{{$env}} terraform config</h4>
+        <code>
+          consul_bots_versions = {<br/>
+            {{ range $index, $bot := $config }}
+            &nbsp;&nbsp;{{ $bot.BotName  }} = "{{- $bot.BotWantedVersion }}"<br/>
+            {{ end }}
+          }
+        </code>
+
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+      </div>
     </div>
 
+    <table>
+      <thead>
+        <tr>
+          <th data-field="id">Bot Name</th>
+          <th data-field="name">Running Version</th>
+          <th data-field="price">Wanted Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $index, $bot := $config }}
+        <tr {{ if eq $bot.BotRunningVersion $bot.BotWantedVersion }}class="card-panel teal lighten-2" {{ else }}class="card-panel red lighten-1" {{ end }}>
+          <td> {{ $bot.BotName }}</td>
+          <td>{{ $bot.BotRunningVersion }}</td>
+          <td>{{ $bot.BotWantedVersion }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+    {{ end }}
 
+  </div>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+  </script>
 </body>
-
 </html>

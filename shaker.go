@@ -97,6 +97,6 @@ func main() {
 
 	router.LoadHTMLGlob("templates/*")
 
-	authorized.GET("/index", getBotsDatas)
+	authorized.GET("/", getBotsDatas)
 	router.Run(":8080")
 }
