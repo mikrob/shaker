@@ -53,9 +53,9 @@ func retrieveEnv(env string, url string, ch chan []bots.BotStatus) {
 }
 
 type envCtx struct {
-	botsStatus      []bots.BotStatus
-	siteMetaVersion string
-	envName         string
+	BotsStatus      []bots.BotStatus
+	SiteMetaVersion string
+	EnvName         string
 }
 
 func getBotsDatas(c *gin.Context) {
@@ -81,9 +81,9 @@ func getBotsDatas(c *gin.Context) {
 			fmt.Println("Timeout for env : ", env)
 		}
 		//datas[env] = envValues
-		envCtx := envCtx{envName: env}
-		envCtx.botsStatus = envValues
-		envCtx.siteMetaVersion = consul.GetSiteMetaVersion(env)
+		envCtx := envCtx{EnvName: env}
+		envCtx.BotsStatus = envValues
+		envCtx.SiteMetaVersion = consul.GetSiteMetaVersion(env)
 		ctx = append(ctx, envCtx)
 	}
 	elapsed := time.Since(start)

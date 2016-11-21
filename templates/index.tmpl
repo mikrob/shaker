@@ -24,18 +24,16 @@
       Took {{ .time }} to retrieve datas
     </p>
     {{ range $c := .ctx }}
-    {{ $c.envName }}
-    <br/>
-    {{/*
-    <h2>{{ $c.siteMetaVersion }}</h2>
-    <a class="waves-effect waves-light btn" href="#modal-{{$c.envName}}">Terraform configuration</a>
+    <h2>{{ $c.EnvName }}</h2>
+    <div class="chip">{{ $c.SiteMetaVersion }}</div>
+    <a class="waves-effect waves-light btn" href="#modal-{{$c.EnvName}}">Terraform configuration</a>
 
-    <div id="modal-{{$c.envName}}" class="modal">
+    <div id="modal-{{$c.EnvName}}" class="modal">
       <div class="modal-content">
-        <h4>{{$c.envName}} terraform config</h4>
+        <h4>{{$c.EnvName}} terraform config</h4>
         <code>
           consul_bots_versions = {<br/>
-            {{ range $index, $bot := $c.botsStatus }}
+            {{ range $index, $bot := $c.BotsStatus }}
             &nbsp;&nbsp;{{ $bot.BotName  }} = "{{- $bot.BotWantedVersion }}"<br/>
             {{ end }}
           }
@@ -56,7 +54,7 @@
         </tr>
       </thead>
       <tbody>
-        {{ range $index, $bot := $c.botsStatus }}
+        {{ range $index, $bot := $c.BotsStatus }}
         <tr {{ if eq $bot.BotRunningVersion $bot.BotWantedVersion }}class="card-panel teal lighten-2" {{ else }}class="card-panel red lighten-1" {{ end }}>
           <td> {{ $bot.BotName }}</td>
           <td>{{ $bot.BotRunningVersion }}</td>
@@ -65,7 +63,6 @@
         {{ end }}
       </tbody>
     </table>
-    */}}
     {{ end }}
 
   </div>

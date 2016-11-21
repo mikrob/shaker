@@ -69,9 +69,12 @@ func GetBotList(env string) []string {
 func GetSiteMetaVersion(env string) string {
 	kv := consulClient.KV()
 	keyPath := fmt.Sprintf("%s/site_meta_version", env)
-	k, v, err := kv.Get(keyPath, nil)
-	fmt.Println(k, v, err)
-	return ""
+	key, _, err := kv.Get(keyPath, nil)
+	if err != nil {
+		fmt.Println("Unable to fetch site meta version")
+		return "unknown"
+	}
+	return string(key.Value)
 }
 
 //EnvToDc convert an env name to a dc name
