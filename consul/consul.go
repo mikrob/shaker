@@ -65,6 +65,15 @@ func GetBotList(env string) []string {
 	return botList
 }
 
+//GetSiteMetaVersion returns the site meta version
+func GetSiteMetaVersion(env string) string {
+	kv := consulClient.KV()
+	keyPath := fmt.Sprintf("%s/site_meta_version", env)
+	k, v, err := kv.Get(keyPath, nil)
+	fmt.Println(k, v, err)
+	return ""
+}
+
 //EnvToDc convert an env name to a dc name
 func EnvToDc(env string) string {
 	envSplitted := strings.Split(env, "-")
