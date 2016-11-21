@@ -60,8 +60,6 @@ type envCtx struct {
 
 func getBotsDatas(c *gin.Context) {
 	start := time.Now()
-	//var datas map[string][]bots.BotStatus
-	//datas = make(map[string][]bots.BotStatus)
 	var ctx []envCtx
 	// create a timeout chan that wait X sec and then send a timeout msg
 	timeoutChan := make(chan bool, 1)
@@ -80,7 +78,6 @@ func getBotsDatas(c *gin.Context) {
 		case <-timeoutChan:
 			fmt.Println("Timeout for env : ", env)
 		}
-		//datas[env] = envValues
 		envCtx := envCtx{EnvName: env}
 		envCtx.BotsStatus = envValues
 		envCtx.SiteMetaVersion = consul.GetSiteMetaVersion(env)
@@ -90,9 +87,8 @@ func getBotsDatas(c *gin.Context) {
 	log.Printf("Retrieve data took %s", elapsed)
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"title": "BotsUnit Shaker",
-		//"status": datas,
-		"time": elapsed,
-		"ctx":  &ctx,
+		"time":  elapsed,
+		"ctx":   &ctx,
 	})
 }
 
